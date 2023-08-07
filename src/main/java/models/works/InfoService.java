@@ -10,5 +10,4 @@ public class InfoService {
 
         return work;
     }
-
 }
