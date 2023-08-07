@@ -15,18 +15,18 @@ public class WorkDao {
      * @return
      */
     public boolean save(Work work) {
-
         SqlSession sqlSession = DBConnection.getSession();
         long workNo = work.getWorkNo();
         int affectedRows = 0;
-        if(workNo > 0L) { // 수정
+        if (workNo > 0L) { // 수정
             affectedRows = sqlSession.update("WorkListMapper.edit", work);
         } else { // 추가
             affectedRows = sqlSession.insert("WorkListMapper.add", work);
         }
+
         sqlSession.commit();
 
-        return false; // 임시
+        return affectedRows > 0;
     }
 
     /**
@@ -36,8 +36,15 @@ public class WorkDao {
      * @return
      */
     public boolean delete(long workNo) {
+        SqlSession sqlSession = DBConnection.getSession();
+        Work params = new Work();
+        params.setWorkNo(workNo);
 
-        return false; // 임시
+        int affectedRows = sqlSession.delete("WorkListMapper.delete", params);
+
+        sqlSession.commit();
+
+        return affectedRows > 0;
     }
 
     /**
@@ -48,7 +55,13 @@ public class WorkDao {
      */
     public Work get(long workNo) {
 
-        return null;
+        Work params = new Work();
+        params.setWorkNo(workNo);
+
+        SqlSession sqlSession = DBConnection.getSession();
+        Work work = sqlSession.selectOne("WorkListMapper.each", params);
+
+        return work;
     }
 
     /**
@@ -58,7 +71,10 @@ public class WorkDao {
      * @return
      */
     public List<Work> gets(Work work) {
+        SqlSession sqlSession = DBConnection.getSession();
 
-        return null;
+        List<Work> items = sqlSession.selectList("WorkListMapper.list", work);
+
+        return items;
     }
 }
